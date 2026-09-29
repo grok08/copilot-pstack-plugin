@@ -10,11 +10,12 @@
   "plugins": [
     {
       "name": "pstack",
-      "description": "P-Stack workflow skills, Copilot CLI agents, and the /poteto-mode command.",
+      "description": "P-Stack workflow skills, Copilot CLI agents, and the /poteto-mode command, maintained by grok08.",
       "version": "0.15.5",
       "source": ".",
       "author": {
-        "name": "Lauren Tan"
+        "name": "grok08",
+        "url": "https://github.com/grok08"
       },
       "license": "MIT",
       "keywords": [

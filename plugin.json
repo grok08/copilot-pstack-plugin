@@ -2,12 +2,13 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pstack",
   "version": "0.15.5",
-  "description": "A Copilot-compatible port of the upstream P-Stack agent workflow skills.",
+  "description": "A GitHub Copilot CLI compatibility port of P-Stack, maintained by grok08.",
   "author": {
-    "name": "Lauren Tan"
+    "name": "grok08",
+    "url": "https://github.com/grok08"
   },
-  "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
-  "repository": "https://github.com/cursor/plugins",
+  "homepage": "https://github.com/grok08/copilot-pstack-plugin",
+  "repository": "https://github.com/grok08/copilot-pstack-plugin",
   "license": "MIT",
   "keywords": [
     "pstack",

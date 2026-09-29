@@ -1,30 +1,33 @@
 # P-Stack for GitHub Copilot CLI
 
-This repository packages a GitHub Copilot CLI port of the upstream P-Stack workflow. It includes 47 skills, the `poteto-agent` and `comment-sicko` agent profiles, and the `/poteto-mode` command. It is an independent compatibility port, not the official Cursor plugin. See [ADAPTATION.md](ADAPTATION.md) for the port details.
+I maintain this GitHub Copilot CLI plugin in [`grok08/copilot-pstack-plugin`](https://github.com/grok08/copilot-pstack-plugin). It adapts the upstream P-Stack workflow and includes 47 skills, the `poteto-agent` and `comment-sicko` agent profiles, and the `/poteto-mode` command. This is an independent port, not the official Cursor plugin. See [ADAPTATION.md](ADAPTATION.md) for the adaptation details and upstream attribution.
 
-## Install from a GitHub repository
+## Install from my marketplace
 
-After publishing this repository, replace `OWNER/REPO` with its GitHub path:
+Add my marketplace to GitHub Copilot CLI:
 
 ```sh
-copilot plugin install OWNER/REPO
+copilot plugin marketplace add grok08/copilot-pstack-plugin
 ```
 
-To add this repository's marketplace instead, run:
+Browse and install P-Stack:
 
 ```sh
-copilot plugin marketplace add OWNER/REPO
 copilot plugin marketplace browse pstack
 copilot plugin install pstack@pstack
 ```
 
-The marketplace is defined in `.github/plugin/marketplace.json`. The marketplace name is `pstack`.
+The marketplace name and plugin name are both `pstack`. I publish the catalog in [.github/plugin/marketplace.json](.github/plugin/marketplace.json).
+
+To install P-Stack directly from my repository without adding the marketplace, run:
+
+```sh
+copilot plugin install grok08/copilot-pstack-plugin
+```
 
 ## Try a local checkout
 
-```sh
-copilot --plugin-dir /path/to/copilot-pstack-plugin
-```
+From a local checkout, run `copilot --plugin-dir .` in the repository directory.
 
 Use `/poteto-mode` to start the P-Stack workflow. You can also ask Copilot to apply a skill such as `how`, `swarm`, or `principle-prove-it-works`.
 
