@@ -1,0 +1,27 @@
+{
+  "name": "pstack",
+  "owner": {
+    "name": "grok08"
+  },
+  "metadata": {
+    "description": "GitHub Copilot CLI compatibility port of the P-Stack workflow plugin.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "pstack",
+      "description": "P-Stack workflow skills, Copilot CLI agents, and the /poteto-mode command.",
+      "version": "0.15.5",
+      "source": ".",
+      "author": {
+        "name": "Lauren Tan"
+      },
+      "license": "MIT",
+      "keywords": [
+        "pstack",
+        "workflow",
+        "agent-skills"
+      ]
+    }
+  ]
+}

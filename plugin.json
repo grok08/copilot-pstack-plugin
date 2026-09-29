@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pstack",
+  "version": "0.15.5",
+  "description": "A Copilot-compatible port of the upstream P-Stack agent workflow skills.",
+  "author": {
+    "name": "Lauren Tan"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "pstack",
+    "poteto-mode",
+    "workflow",
+    "principles",
+    "agent-style",
+    "subagents",
+    "unslop"
+  ],
+  "extensions": {
+    "com.github.copilot": {}
+  }
+}
