@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "GitHub Copilot CLI compatibility port of the P-Stack workflow plugin.",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "plugins": [
     {
       "name": "pstack",
       "description": "P-Stack workflow skills, Copilot CLI agents, and the /poteto-mode command, maintained by grok08.",
-      "version": "0.15.5",
+      "version": "1.0.1",
       "source": ".",
       "author": {
         "name": "grok08",

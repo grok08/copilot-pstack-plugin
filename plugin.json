@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pstack",
-  "version": "0.15.5",
+  "version": "1.0.1",
   "description": "A GitHub Copilot CLI compatibility port of P-Stack, maintained by grok08.",
   "author": {
     "name": "grok08",

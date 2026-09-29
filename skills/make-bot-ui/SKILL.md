@@ -1,6 +1,6 @@
 ---
 name: make-bot-ui
-description: >-
+description: Build a local web UI that triggers a webhook routine while keeping its sender key on the server.
 ---
 # How to make a bot UI
 
