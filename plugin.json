@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pstack",
-  "version": "1.0.1",
-  "description": "A GitHub Copilot CLI compatibility port of P-Stack, maintained by grok08.",
+  "version": "1.0.2",
+  "description": "P-Stack workflows for GitHub Copilot Chat in VS Code and VS Code Insiders, and GitHub Copilot CLI. Maintained by grok08.",
   "author": {
     "name": "grok08",
     "url": "https://github.com/grok08"

@@ -7,7 +7,7 @@ description: poteto's agent style for concise, detailed responses, deliberate su
 
 ## Host capabilities
 
-The shared skills define workflow intent. Use only the delegation, model selection, interaction, browser, terminal, and automation features exposed by Copilot CLI. CLI support depends on the installed version and configuration. The bundled skills do not provide external browser-control MCPs, cloud workers, transcript stores, or scheduled wake services. When a required capability is unavailable, work sequentially where that preserves the goal or report the affected verification or workflow as blocked. Never report an unsupported step as complete.
+The shared skills define workflow intent. Use only the delegation, model selection, interaction, browser, terminal, and automation features exposed by the active Copilot client. Feature support depends on the client, version, account, and configuration. The bundled skills do not provide external browser-control MCPs, cloud workers, transcript stores, or scheduled wake services. When a required capability is unavailable, work sequentially where that preserves the goal or report the affected verification or workflow as blocked. Never report an unsupported step as complete.
 
 ## Non-negotiables
 
