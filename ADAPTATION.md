@@ -1,6 +1,6 @@
 # Porting and adaptation notes
 
-This package adapts the upstream P-Stack plugin for GitHub Copilot Chat in VS Code and VS Code Insiders, and for GitHub Copilot CLI. The source snapshot is `cursor/plugins/pstack` at commit `adf3218ca2f5b9971eedc07a76bef22df7701539` (version 0.15.5). The upstream MIT license, logo, 47 skill entry files, and their nested references, playbooks, and scripts are preserved. Skill names, descriptions, and workflow substance follow upstream; metadata and host-specific directions are adapted. This is not the official Cursor plugin.
+This package adapts the upstream P-Stack plugin for GitHub Copilot Chat in VS Code and VS Code Insiders, and for GitHub Copilot CLI. The source snapshot is `cursor/plugins/pstack` at commit `adf3218ca2f5b9971eedc07a76bef22df7701539` (version 0.15.5). The upstream MIT license, logo, 47 skill entry files, and their nested references, playbooks, and scripts are included. Common workflow intent follows upstream; host-specific workflows are adapted, documented as unavailable, or given a fallback. This is not the official Cursor plugin.
 
 ## Component layout
 
@@ -14,16 +14,17 @@ This package adapts the upstream P-Stack plugin for GitHub Copilot Chat in VS Co
 | Upstream host construct | Copilot adaptation |
 | --- | --- |
 | Cursor plugin manifest and agent profiles | Agent Plugins 1.0 `plugin.json` plus Copilot namespaced agent profiles. |
-| Upstream delegation requests | Shared skills state delegation intent and expected results. Copilot CLI uses its task tool and named agents; VS Code Copilot Chat supports agents and subagents. Use only the delegation, background execution, remote environments, model routing, and read-only controls exposed by the active client. |
+| Upstream delegation requests | Shared skills state delegation intent and expected results. Copilot agent and delegation features vary by client and version. Use only the named-agent, subagent, background execution, remote environment, model routing, and read-only controls the active client actually exposes. |
 | Upstream structured questions | Ask the user through the active Copilot client's interaction features. |
 | Cursor skill and model-rule paths | Skill paths use Copilot's `.github/skills/` and `~/.copilot/skills/` conventions. Model-rule references become model preferences rather than implying a Cursor rule file exists in Copilot. |
-| `/loop`, cloud agents, transcripts, and client status | Reworded as client session/automation controls, Copilot agents/session status, or workspace-scoped transcript access. A feature with no equivalent remains a documented host limitation. |
+| Cursor webhook routines and secret requests | Copilot does not provide Cursor's `update_state` routine creation or `SendToUser` secret-request flow. `make-bot-ui` now integrates only with an existing, user-provided webhook service and does not invent a Copilot endpoint. |
+| `/loop`, cloud agents, transcripts, and client status | Use only session, agent, and automation controls exposed by the active client. Copilot CLI documents `/chronicle` and local session history; other clients have their own session UI and may not expose raw transcripts. No scheduled wake service or transcript file layout is assumed. |
 | Optional upstream tools | The bundled `unslop` skill covers prose cleanup. Use the terminal, browser, and other tools exposed by the active Copilot client. This package does not bundle external MCP servers or browser-control services. |
 | Graphite stack operations | `orchestrate` requires the Graphite CLI because its frontier commands use Graphite stack metadata. Autopilot workflows and other PR playbooks use the resolved forge and do not require Graphite. |
 | Bugbot review markers | The watcher recognizes Bugbot authors and Copilot-authored automation markers case-insensitively. Ordinary Copilot comments do not count as Bugbot reviews. |
-| Cursor skill frontmatter | Converted to Agent Skills `name` and `description` metadata; unsupported Cursor-only metadata is removed. |
+| Skill frontmatter | Portable Agent Skills fields are validated against the open standard. VS Code's documented `argument-hint`, `user-invocable`, and `disable-model-invocation` extensions are allowed where used; do not assume every Copilot client honors them. |
 
-The package retains host-neutral workflow ideas such as parallel review, validation gates, and decision trails. Copilot features depend on the client, version, account, and configuration. The skills do not provide remote workers, transcript stores, scheduled wake services, or external browser controls. When a required feature is unavailable, use a sequential workflow where possible or report the blocked step. JetBrains supports Agent Skills in preview, but this repository has not verified the Agent Plugins package, its agents, or its commands in JetBrains.
+The package retains host-neutral workflow ideas such as parallel review, validation gates, and decision trails. Copilot features depend on the client, version, account, and configuration. The plugin does not bundle remote workers, scheduled wake services, or external browser controls. Some Copilot clients provide session history, but raw transcript access is not portable. When a required feature is unavailable, use a sequential workflow where possible or report the blocked step. JetBrains supports Agent Skills in preview, but this repository has not verified the Agent Plugins package, its agents, or its commands in JetBrains.
 
 ## Role and model selection
 

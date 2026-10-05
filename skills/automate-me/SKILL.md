@@ -1,19 +1,19 @@
 ---
 name: automate-me
-description: "Use for \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via Copilot skill authoring workflow + unslop, optionally pulling fresh evidence from recent transcripts."
+description: "Use for \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill using session history exposed by the active Copilot client and the Agent Skills format."
 ---
 
 # Automate me
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-This skill orchestrates three others: an inline mining pass (see step 1), Copilot's built-in `Copilot skill authoring workflow` (authoring), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
+Use the active Copilot client's documented skill-creation feature when available. VS Code provides `/create-skill`; other clients may require authoring the file directly using the Agent Skills format. Apply the **unslop** skill for prose.
 
 ## Flow
 
 ### 0. Check for an existing skill
 
-Look recursively for `.github/skills/**/*-mode/SKILL.md` and `~/.github/skills/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a personal category directory (`.github/skills/<handle>/`), not only at the top level. If one exists, confirm intent with `ask the user` (unless they already said "update my skill" or similar):
+Look recursively for `.github/skills/**/*-mode/SKILL.md` and `~/.copilot/skills/**/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a project category directory (`.github/skills/<handle>/`), not only at the top level. If one exists, confirm intent with `ask the user` (unless they already said "update my skill" or similar):
 
 - Update the existing skill (default for repeat runs)
 - Start fresh (rare, ask why before doing it)
@@ -25,9 +25,9 @@ Update mode changes the rest of the flow:
 
 ### 1. Mine their history
 
-Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `agent-transcripts/` directory. Use only that path. Don't glob across `~/.copilot/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+Survey session history exposed by the active Copilot client. Copilot CLI supports `/chronicle search`; use another client's documented history UI where available. Do not assume raw transcript files exist. If the client cannot expose prior conversations, use the current conversation only and do not claim a pattern across sessions. Never guess a transcript path or search another workspace.
 
-Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. If the client exposes enough history to review, split the results across parallel subagents. Give each reviewer only the session excerpts it needs. Each returns a short structured list of patterns with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)
@@ -63,17 +63,17 @@ The **poteto-mode** skill shows the shape. Read it for granularity. Don't copy i
 
 ### 4. Draft the skill
 
-Use Copilot's skill authoring workflow to author the skill. Placement:
+Use the active client's documented skill-creation feature when available. Otherwise author the skill directly using the Agent Skills format. Placement:
 
-- Path: preserve an existing mode skill's category. For a new mode, use `.github/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle. Otherwise default to `.github/skills/<handle>-mode/SKILL.md` in the project (or `~/.github/skills/<handle>-mode/` if the user prefers a personal skill).
+- Path: preserve an existing mode skill's category. For a new mode, use `.github/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established project category for that handle. Otherwise default to `.github/skills/<handle>-mode/SKILL.md` in the project (or `~/.copilot/skills/<handle>-mode/` if the user prefers a personal skill).
 - Handle: the user's first name or chosen identifier.
 - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
-- Frontmatter formatting: follow `Copilot skill authoring workflow`'s YAML rules. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
-- Frontmatter `disable-model-invocation: true` by default. Opt out only if the user explicitly wants their mode to apply on every turn.
+- Frontmatter formatting: follow the Agent Skills format. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it. VS Code supports additional skill frontmatter fields, but those extensions are not portable to every Copilot client; use them only when their client-specific behavior is needed and document the fallback.
+- In VS Code, `disable-model-invocation: true` can require manual invocation. It is a VS Code extension, not portable Agent Skills metadata; do not imply the same control exists in Copilot CLI.
 
 ### 5. Iterate on prose
 
-Apply the **unslop** skill and `Copilot skill authoring workflow`'s writing guidelines to every line.
+Apply the **unslop** skill and the Agent Skills format to every line.
 
 Show the draft to the user and take feedback. Expect multiple iterations. Cut ruthlessly. A mode skill is not a manual.
 
@@ -92,11 +92,11 @@ Work in a worktree off main. Commit and open a PR. Don't push to main directly.
 
 ## Evaluation
 
-A `-mode` skill is subjective output. A `Copilot skill authoring workflow`-style test/iterate benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
+A `-mode` skill is subjective output. A formal benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
 
 Run a description-optimization loop only if the skill's trigger accuracy turns out to be a problem in practice.
 
 ## When not to use
 
-- User wants a task-specific skill (not working conventions): `Copilot skill authoring workflow` alone, no mining required.
+- User wants a task-specific skill (not working conventions): use the active client's documented skill-creation feature if available, or author directly to the Agent Skills format; no history mining is required.
 - User wants to capture one narrow workflow (e.g. "how I write commit messages"). That's a regular skill, not a mode skill.

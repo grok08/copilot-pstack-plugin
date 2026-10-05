@@ -45,6 +45,7 @@ With Python 3.10 or later, run:
 
 ```sh
 python scripts/port_upstream.py --validate
+python -m unittest discover -s scripts -p "test_*.py"
 ```
 
 Run the bundled workflow script checks with Bun:

@@ -17,8 +17,10 @@ SKILL_FIELDS = {
     "compatibility",
     "metadata",
     "allowed-tools",
-    "paths",
 }
+VSCODE_SKILL_FIELDS = {"argument-hint", "disable-model-invocation", "user-invocable"}
+# This Cursor-specific webhook API has no Copilot equivalent; keep its generic endpoint fallback.
+ADAPTED_SKILL_OVERRIDES = {"make-bot-ui/SKILL.md"}
 RUNTIME_REPLACEMENTS = (
     (r"~[/\\]\.cursor/rules/pstack-models\.mdc", "Copilot model preferences"),
     (r"(?:~[/\\]\.cursor/rules/|\.cursor/rules/)?pstack-models\.mdc", "Copilot model preferences"),
@@ -26,22 +28,21 @@ RUNTIME_REPLACEMENTS = (
     (r"\.cursor/skills/", ".github/skills/"),
     (r"\.cursor/worktrees/", "worktrees/"),
     (r"~[/\\.]cursor/(?:projects|plugins|worktrees)", "the active Copilot client's configuration"),
-    (r"Cursor's `/loop` command", "the active Copilot client's session or automation controls"),
-    (r"Cursor's `/loop`", "the active Copilot client's session or automation controls"),
+    (r"Cursor's `/loop` command", "the active Copilot client's session or automation controls, if available"),
+    (r"Cursor's `/loop`", "the active Copilot client's session or automation controls, if available"),
     (r"Cursor's `/automate`", "the active Copilot client's automation configuration"),
-    (r"Cursor's built-in babysit skill", "the host's built-in babysit workflow"),
-    (r"Cursor's built-in for authoring SKILL.md files", "Copilot's skill authoring workflow"),
-    (r"Cursor's built-in `create-skill` skill", "Copilot's skill authoring workflow"),
+    (r"Cursor's built-in babysit skill", "a similarly named host workflow, if one is actually available"),
+    (r"Cursor's built-in for authoring SKILL.md files", "the host's documented skill-authoring feature, if available"),
+    (r"Cursor's built-in `create-skill` skill", "the host's documented skill-authoring feature, if available"),
     (r"Cursor cloud agent", "Copilot agent"),
     (r"Cursor Cloud Agent", "Copilot agent"),
     (r"Cursor dashboard", "Copilot session status"),
     (r"Cursor restart", "Copilot client restart"),
-    (r"Cursor", "Copilot"),
+    (r"\bCursor\b", "Copilot"),
     (r"cursor-team-kit", "separately configured Copilot tools or MCP servers"),
     (r"control-ui", "the host's available browser tools"),
     (r"control-cli", "the host's available terminal tools"),
     (r"deslop", "unslop"),
-    (r"create-skill", "Copilot skill authoring workflow"),
     (r"AskQuestion", "ask the user"),
     (r"subagent_type", "agent role"),
     (r"generalPurpose", "general-purpose"),
@@ -71,11 +72,11 @@ def adapt_frontmatter(text: str, directory_name: str) -> str:
             continue
         key = match.group(1)
         in_metadata = key == "metadata"
-        if key not in SKILL_FIELDS:
+        if key not in SKILL_FIELDS | VSCODE_SKILL_FIELDS:
             continue
         if key == "name":
             kept.append(f"name: {directory_name}")
-        elif key not in {"paths", "disable-model-invocation", "user-invocable"}:
+        else:
             kept.append(line)
     if directory_name == "typescript-best-practices":
         kept.append('metadata:\n  "copilot/instructions": "**/*.ts, **/*.tsx"')
@@ -135,6 +136,11 @@ def port(source: Path, replace_existing: bool = False) -> None:
         raise ValueError(f"source has no LICENSE: {source}")
     if not replace_existing and any((ROOT / path).exists() for path in ("skills", "plugin.json", "LICENSE")):
         raise ValueError("port target already contains generated plugin files")
+    preserved_overrides = {
+        relative: (ROOT / "skills" / relative).read_text(encoding="utf-8")
+        for relative in ADAPTED_SKILL_OVERRIDES
+        if (ROOT / "skills" / relative).is_file()
+    }
     if replace_existing:
         shutil.rmtree(ROOT / "skills", ignore_errors=True)
         for path in (ROOT / "LICENSE", ROOT / "assets" / "logo.png"):
@@ -152,10 +158,16 @@ def port(source: Path, replace_existing: bool = False) -> None:
         if not path.is_file() or path.suffix.lower() not in {".md", ".mdc", ".sh", ".ts", ".tsx", ".js", ".json"}:
             continue
         text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(ROOT / "skills").as_posix()
+        if relative in preserved_overrides:
+            text = preserved_overrides[relative]
+        else:
+            if path.name == "SKILL.md":
+                text = adapt_frontmatter(text, path.relative_to(ROOT / "skills").parts[0])
+            text = adapt_runtime(text)
         if path.name == "SKILL.md":
-            text = adapt_frontmatter(text, path.relative_to(ROOT / "skills").parts[0])
             count += 1
-        replace_file(path, adapt_runtime(text))
+        replace_file(path, text)
     print(f"Ported {count} upstream skills from {source}")
 
 
@@ -209,9 +221,9 @@ def validate() -> int:
                 for line in frontmatter.splitlines()
                 if (match := re.match(r"^([a-zA-Z0-9_-]+):", line))
             }
-            unsupported = fields - SKILL_FIELDS
+            unsupported = fields - SKILL_FIELDS - VSCODE_SKILL_FIELDS
             if unsupported:
-                errors.append(f"{path.relative_to(ROOT)} has unsupported fields {sorted(unsupported)}")
+                errors.append(f"{path.relative_to(ROOT)} has unsupported Agent Skills fields {sorted(unsupported)}")
             if f"name: {path.parent.name}" not in frontmatter:
                 errors.append(f"{path.relative_to(ROOT)} name does not match its directory")
             if not re.search(r"(?m)^description:\s*\S", frontmatter):
@@ -252,7 +264,11 @@ def validate() -> int:
     if not (ROOT / "ADAPTATION.md").is_file():
         errors.append("ADAPTATION.md is missing")
 
-    host_only = re.compile(r"(?i)cursor-team-kit|subagent_type\s*:|AskQuestion|~[/\\.]cursor|\.cursor/(?:skills|rules)|pstack-models\.mdc|~/Copilot model selection")
+    host_only = re.compile(
+        r"(?i)cursor-team-kit|subagent_type\s*:|AskQuestion|~[/\\.]cursor|\.cursor/(?:skills|rules)|"
+        r"pstack-models\.mdc|~/Copilot model selection|agent-transcripts|~[/\\.]github/skills|"
+        r"api2\.(?:cursor|Copilot)\.sh|Copilot skill authoring workflow|SendToUser|secret-request|update_state"
+    )
     text_files = [
         path for path in (ROOT / "skills").rglob("*")
         if path.is_file() and is_packaged_file(path) and path.suffix.lower() in {".md", ".mdc", ".sh", ".tsx", ".ts", ".js", ".json"}

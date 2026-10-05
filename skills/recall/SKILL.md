@@ -14,7 +14,7 @@ Keep the result tight and on-topic. Read only the context needed to answer the r
 
 ## Context sources
 
-Copilot provides session history for previous Copilot CLI and GitHub Copilot app sessions. Copilot stores complete locally run session records under `~/.copilot/session-state/` and maintains a session store that powers session-history queries and `/chronicle`. Prefer those native session-history capabilities over hard-coded transcript paths or file-name assumptions.
+Copilot CLI stores session records under `~/.copilot/session-state/` and provides session-history search through `/chronicle`. These CLI commands are not available in every Copilot client. In VS Code, use its session-history UI or other documented history features when available. Prefer the active client's native history capabilities over hard-coded transcript paths or file-name assumptions.
 
 Use four evidence layers:
 
@@ -54,11 +54,12 @@ Never inspect another repository's session history unless the user asks for it.
 
 ### 3. Mine Copilot session history first
 
-Use Copilot's native session-history capability.
+Use the active Copilot client's native session-history capability.
 
 Prefer:
 
-- `/chronicle search <topic>` for direct topic search.
+- `/chronicle search <topic>` for direct topic search in Copilot CLI.
+- The documented session-history UI or controls when working in another Copilot client.
 - A natural-language question about previous sessions when semantic reconstruction is needed.
 - Session resume/history features when a specific prior session must be inspected.
 
@@ -86,7 +87,7 @@ Evidence: <session id and relevant excerpt or locator>
 
 Keep raw session content inside the investigators. Return only findings to the main thread.
 
-Do not invent a filesystem layout such as `~/.copilot/projects/.../agent-transcripts/...`. Copilot's current documented storage model is `~/.copilot/session-state/` plus the local session store.
+Never invent a session-file layout or inspect history outside the active workspace. Copilot CLI's documented storage model is `~/.copilot/session-state/` plus the local session store.
 
 ### 4. Sweep project records for a named target
 

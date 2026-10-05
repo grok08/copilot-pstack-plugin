@@ -2,7 +2,7 @@
 
 **You own the skill's voice.**
 
-1. Use the **Copilot skill authoring workflow** skill (Copilot's skill authoring workflow).
+1. Use the active client's documented skill-creation feature when available. VS Code provides `/create-skill`; in other clients, author directly to the Agent Skills format.
 2. Validate the skill: frontmatter has `name` and `description`, referenced files exist, cross-skill links resolve.
 3. Test cases if structural. Skip if subjective.
 4. Run **Opening a PR**.

@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
+description: Review the current conversation for durable learnings, surface evidence, and route each to a concrete edit on an existing skill. Use when the user says reflect.
 ---
 
 # Reflect
@@ -13,17 +13,9 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ## Process
 
-### 1. Locate the active transcript
+### 1. Capture the current conversation
 
-The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `agent-transcripts/` directory. Use that path. Do not glob across `~/.copilot/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
-
-```bash
-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
-```
-
-Three transcript layouts: legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`).
-
-For each candidate, read the first JSONL line and check that `message.content[0].text` contains the conversation's opening user prompt. Take the matching path. If no path resolves, write a tight digest of the session and pass that instead.
+Use the current conversation already available to the parent. For prior sessions, use only history features exposed by the active Copilot client. Copilot CLI supports `/chronicle search`; other clients may provide a session-history UI. If the client does not expose the transcript, do not guess its location or search another workspace. Pass a concise digest of the available conversation to reviewers and state when historical context was unavailable.
 
 ### 2. Spawn three reviewers in parallel
 
@@ -56,9 +48,9 @@ Backlog items file to whatever devex / backlog tracker your team uses automatica
 For each approved Accepted item, follow the Routing field exactly:
 
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
-- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Copilot's skill authoring workflow and run its draft / test / iterate loop.
-- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `Copilot skill authoring workflow` and run its description-optimization loop.
-- `new skill via Copilot skill authoring workflow: <kebab-name>`: hand creation to `Copilot skill authoring workflow`. Do not invent the shape ad hoc.
+- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): use the active client's documented skill-authoring feature when available; otherwise follow the Agent Skills format directly.
+- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): use the active client's documented skill-authoring feature when available, or edit the description directly and validate it.
+- `new skill via Agent Skills format: <kebab-name>`: use the active client's documented creation feature when available; otherwise author the files directly. Do not assume a built-in authoring workflow exists.
 
 If your environment ships a SKILL.md validator, run it on every touched skill before declaring done. Skip this step if it doesn't.
 
