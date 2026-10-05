@@ -35,6 +35,12 @@ copilot plugin install grok08/copilot-pstack-plugin
 
 ## Update an installation
 
+### VS Code and VS Code Insiders
+
+Open the Command Palette and run **Chat: Update Plugins** to update installed plugins. If you need to force an update, run **Chat: Update Plugins (Force)**.
+
+### Copilot CLI
+
 For a marketplace installation, refresh the catalog and update P-Stack:
 
 ```sh
@@ -42,7 +48,7 @@ copilot plugin marketplace update pstack
 copilot plugin update pstack@pstack
 ```
 
-Restart Copilot CLI after the update. For each release, keep the versions in `plugin.json` and `.github/plugin/marketplace.json` in sync with the release tag (for example, tag `v1.0.3` uses manifest version `1.0.3`). A Git tag alone does not update the marketplace catalog.
+Restart Copilot CLI after the update so the active session loads the new files. For each release, keep the versions in `plugin.json` and `.github/plugin/marketplace.json` in sync with the release tag (for example, tag `v1.0.3` uses manifest version `1.0.3`). A Git tag alone does not update the marketplace catalog.
 
 ## Try a local checkout in Copilot CLI
 
