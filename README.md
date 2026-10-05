@@ -33,9 +33,28 @@ To install P-Stack directly from my repository without adding the marketplace, r
 copilot plugin install grok08/copilot-pstack-plugin
 ```
 
+## Update an installation
+
+For a marketplace installation, refresh the catalog and update P-Stack:
+
+```sh
+copilot plugin marketplace update pstack
+copilot plugin update pstack@pstack
+```
+
+Restart Copilot CLI after the update. For each release, keep the versions in `plugin.json` and `.github/plugin/marketplace.json` in sync with the release tag (for example, tag `v1.0.3` uses manifest version `1.0.3`). A Git tag alone does not update the marketplace catalog.
+
 ## Try a local checkout in Copilot CLI
 
 From a local checkout, run `copilot --plugin-dir .` in the repository directory.
+
+This loads the plugin from that checkout, not from the marketplace. To run a tagged release, fetch the tags, check out the desired tag, and start Copilot CLI again:
+
+```sh
+git fetch origin --tags
+git switch --detach vX.Y.Z
+copilot --plugin-dir .
+```
 
 Use `/poteto-mode` to start the P-Stack workflow. You can also ask Copilot to apply a skill such as `how`, `swarm`, or `principle-prove-it-works`.
 

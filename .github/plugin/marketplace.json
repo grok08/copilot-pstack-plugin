@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "P-Stack workflow plugin for GitHub Copilot Chat in VS Code and VS Code Insiders, and GitHub Copilot CLI.",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "plugins": [
     {
       "name": "pstack",
       "description": "P-Stack workflow skills, Copilot agents, and the /poteto-mode command for Copilot Chat in VS Code and VS Code Insiders, and Copilot CLI. Maintained by grok08.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "source": ".",
       "author": {
         "name": "grok08",
